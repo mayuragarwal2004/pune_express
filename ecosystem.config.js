@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
       {
-        name: 'the-bombay-forum',
+        name: 'pune-express',
         script: 'npm',
         args: 'start',
         instances: 'max',
