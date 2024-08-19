@@ -1,14 +1,8 @@
-from ScraperNDTVlifestyle import ScraperNDTVLifestyle
-from ScraperMoneyControlFinance import ScraperMoneyControlFinance
-from ScraperNDTVtechnology import ScraperNDTVTechnology
-from ScraperMoneyControlMarket import ScraperMoneyControlMarket
+from ScraperNDTVpune import ScraperNDTVpune
 
 def main():
     scrapers = [
-        ScraperNDTVLifestyle(),
-        ScraperMoneyControlFinance(),
-        ScraperNDTVTechnology(),
-        ScraperMoneyControlMarket()
+        ScraperNDTVpune(),
     ]
     
     for scraper in scrapers:
