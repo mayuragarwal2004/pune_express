@@ -24,11 +24,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const navList = [
-    { name: "Lifestyle", link: "/category/lifestyle" },
-    { name: "Finance", link: "/category/finance" },
-    { name: "Markets", link: "/category/markets" },
-    { name: "Technology", link: "/category/technology" },
-    { name: "Bombay", link: "/category/bombay" },
+    { name: "Pune", link: "/category/pune" },
   ];
 
   const session = await getServerSession(authOptions);
