@@ -23,13 +23,13 @@ export default function Launch() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>The Bombay Forum</title>
+        <title>Pune Express</title>
       </Head>
       <div
         className={`${styles.logoContainer} ${isBouncing ? styles.bounce : ""}`}
       >
         <img src="/images/logo.png" alt="Logo" width={150} />
-        <h1 className={styles.title}>The Bombay Forum</h1>
+        <h1 className={styles.title}>Pune Express</h1>
       </div>
       {!isCelebrating && (
         <button className={styles.launchButton} onClick={handleLaunchClick}>

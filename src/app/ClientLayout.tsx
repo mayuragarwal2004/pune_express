@@ -25,8 +25,8 @@ export default function ClientLayout({ children, session }: Props) {
     async function fetchData() {
       // Simulate fetching custom data
       const fetchedData = {
-        name: "The Bombay Forum",
-        description: "Get your daily dose of news from The Bombay Forum",
+        name: "Pune Express",
+        description: "Get your daily dose of news from Pune Express",
       };
 
       // Add custom data to the session
