@@ -8,7 +8,7 @@ import { authOptions } from "../pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import ClientLayout from "./ClientLayout";
 import DarkButton from "./components/DarkButton";
-import SearchIcon from "@mui/icons-material/Search"; 
+import SearchIcon from "@mui/icons-material/Search";
 import SearchBarClient from "./components/SearchBarClient";
 import NewsletterSubscription from "./components/NewsletterSubscription";
 
@@ -24,9 +24,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const navList = [
-    { name: "Pune", link: "/category/pune" },
-  ];
+  const navList = [{ name: "Pune", link: "/category/pune" }];
 
   const privacyPolicy = [
     { name: "Terms and conditions", link: "/terms/conditions" },
@@ -45,20 +43,19 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <head>
-      </head>
+      <head></head>
       <body className={inter.className}>
         <ClientLayout session={session}>
           <div>
-            <header >
+            <header>
               <div className="mobile-nav">
                 <div className="logo">
                   <Link href="/">
                     <Image
                       src="/images/logo.png"
                       alt="Logo"
-                      width={93}
-                      height={40}
+                      width={160}
+                      height={60}
                     />
                   </Link>
                   {/* <h1 className="title">
@@ -67,11 +64,11 @@ export default async function RootLayout({
                 </div>
                 <nav>
                   <ul>
-                  <div className="search-icon">
-                  <Link href="/search">
-                    <SearchBarClient />
-                  </Link>
-                </div>
+                    <div className="search-icon">
+                      <Link href="/search">
+                        <SearchBarClient />
+                      </Link>
+                    </div>
                     {navList.map((navItem) => (
                       <div key={navItem.name}>
                         <Link href={navItem.link}>{navItem.name}</Link>
@@ -93,18 +90,18 @@ export default async function RootLayout({
                       ))}
                   </ul>
                   <div className="search-icon">
-                <Link href="/search">
-                  <SearchBarClient />
-                </Link>
-              </div>
+                    <Link href="/search">
+                      <SearchBarClient />
+                    </Link>
+                  </div>
                   <ul>
                     <div className="logo">
                       <Link href="/">
                         <Image
                           src="/images/logo.png"
                           alt="Logo"
-                          width={93}
-                          height={40}
+                          width={160}
+                          height={60}
                         />
                       </Link>
                       {/* <h1 className="title">
@@ -125,7 +122,6 @@ export default async function RootLayout({
                   <p style={{ color: "#fff" }}>{formattedDate}</p>
                 </nav>
               </div>
-              
             </header>
             {children}
             <section className="footer">
@@ -137,13 +133,13 @@ export default async function RootLayout({
                         <Image
                           src="/images/logo.png"
                           alt="Logo"
-                          width={53}
-                          height={20}
+                          width={200}
+                          height={60}
                         />
                       </Link>
-                      <h1 className="title">
+                      {/* <h1 className="title">
                         <Link href="/">Pune Express</Link>
-                      </h1>
+                      </h1> */}
                     </div>
                     <div className="body">
                       <p>
