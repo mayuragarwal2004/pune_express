@@ -1,10 +1,16 @@
 "use client";
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent, use } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 import styles from "./AdminPage.module.css";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css"; // Import the styles for React-Quill
+import crypto from "crypto"; // For article ID generation
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+const MarkdownIt = require("markdown-it");
 
 // Firebase configuration
 const firebaseConfig = {
@@ -27,21 +33,12 @@ interface FormData {
   sphoto: string;
   lphoto: string;
   type: string;
-  source: string;
-  sourceLink: string;
-  link: string;
-}
-
-interface Article {
-  id: number;
-  articleId: string;
-  title: string;
-  description: string;
 }
 
 export default function AdminPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const md = new MarkdownIt();
 
   const [formData, setFormData] = useState<FormData>({
     articleId: "",
@@ -50,68 +47,118 @@ export default function AdminPage() {
     sphoto: "",
     lphoto: "",
     type: "",
-    source: "",
-    sourceLink: "",
-    link: "",
   });
 
-  const [sPhotoFile, setSPhotoFile] = useState<File | null>(null);
-  const [lPhotoFile, setLPhotoFile] = useState<File | null>(null);
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [editorContent, setEditorContent] = useState<string>("");
+  const [smallPhotoFile, setSmallPhotoFile] = useState<File | null>(null);
+  const [largePhotoFile, setLargePhotoFile] = useState<File | null>(null);
+  const [generateIdAutomatically, setGenerateIdAutomatically] = useState(true);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [formErrors, setFormErrors] = useState<string>("");
+  const [formValid, setFormValid] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log("Articles: ", articles);
-  }, [articles]);
+  // Generate Article ID from title
+  const generateArticleId = (title: string) => {
+    const titleSlug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)+/g, "")
+      .slice(0, 240);
+    const suffix = crypto
+      .createHash("md5")
+      .update(title)
+      .digest("hex")
+      .slice(0, 7);
+    return `${titleSlug}-${suffix}`;
+  };
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  // Handle changes to title and other text fields
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+
+    // Automatically generate article ID if switched on
+    if (generateIdAutomatically && e.target.name === "title") {
+      const generatedId = generateArticleId(e.target.value);
+      setFormData((prevData) => ({
+        ...prevData,
+        articleId: generatedId,
+      }));
+    }
   };
 
-  const handleFileChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    photoType: "sphoto" | "lphoto"
-  ) => {
+  // Handle rich text editor changes
+  const handleEditorChange = (content: string) => {
+    setEditorContent(content); // HTML content from editor
+  };
+
+  // Handle file changes
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>, type: string) => {
     const file = e.target.files?.[0] || null;
-    if (photoType === "sphoto") setSPhotoFile(file);
-    else setLPhotoFile(file);
+    if (type === "sphoto") setSmallPhotoFile(file);
+    if (type === "lphoto") setLargePhotoFile(file);
   };
 
-  const uploadImage = async (file: File, filePath: string): Promise<string> => {
-    const fileRef = ref(storage, filePath);
-    await uploadBytes(fileRef, file);
-    return await getDownloadURL(fileRef);
+  // Upload image to Firebase
+  const uploadImage = async (file: File, path: string) => {
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
   };
+
+  // Validate form data
+  const validateForm = () => {
+    if (
+      !formData.title.trim() ||
+      !formData.articleId.trim() ||
+      !editorContent.trim() ||
+      !smallPhotoFile ||
+      !largePhotoFile ||
+      !formData.type.trim()
+    ) {
+      setFormErrors("All fields must be filled out.");
+      return false;
+    }
+    setFormErrors("");
+    return true;
+  };
+
+  useEffect(() => {
+    setFormValid(validateForm());
+  }, [formData, editorContent, smallPhotoFile, largePhotoFile]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true); // Set loading state to true
+
+    if (!validateForm()) {
+      setLoading(false); // Set loading state to false if validation fails
+      return;
+    }
 
     try {
-      let sPhotoURL = formData.sphoto;
-      let lPhotoURL = formData.lphoto;
-
-      if (sPhotoFile) {
-        sPhotoURL = await uploadImage(
-          sPhotoFile,
-          `images/sphoto_${Date.now()}`
-        );
-      }
-
-      if (lPhotoFile) {
-        lPhotoURL = await uploadImage(
-          lPhotoFile,
-          `images/lphoto_${Date.now()}`
-        );
-      }
+      // We are sending the HTML from the editor directly as 'description'
+      const sphotoURL = smallPhotoFile
+        ? await uploadImage(
+            smallPhotoFile,
+            `images/${formData.articleId}-small.jpg`
+          )
+        : "";
+      const lphotoURL = largePhotoFile
+        ? await uploadImage(
+            largePhotoFile,
+            `images/${formData.articleId}-large.jpg`
+          )
+        : "";
 
       const newFormData = {
         ...formData,
-        sphoto: sPhotoURL,
-        lphoto: lPhotoURL,
+        description: editorContent, // HTML content from the editor
+        sphoto: sphotoURL,
+        lphoto: lphotoURL,
       };
 
       const res = await fetch("/api/admin/news", {
@@ -122,8 +169,6 @@ export default function AdminPage() {
         body: JSON.stringify(newFormData),
       });
 
-      console.log("form Data: ", newFormData);
-
       if (res.ok) {
         alert("News added successfully!");
         setFormData({
@@ -133,19 +178,17 @@ export default function AdminPage() {
           sphoto: "",
           lphoto: "",
           type: "",
-          source: "",
-          sourceLink: "",
-          link: "",
         });
-        setSPhotoFile(null);
-        setLPhotoFile(null);
-        const newArticle = await res.json();
-        setArticles((prevArticles) => [...prevArticles, newArticle]);
+        setEditorContent("");
+        setSmallPhotoFile(null);
+        setLargePhotoFile(null);
       } else {
         alert("Error adding news.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false); // Set loading state to false after completion
     }
   };
 
@@ -158,77 +201,85 @@ export default function AdminPage() {
   return (
     <>
       <div className={styles.container} style={{ marginTop: "90px" }}>
-      <h1 className={styles.heading}>Add News</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        {/* Form fields */}
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          onChange={handleChange}
-          className={styles.textarea}
-        />
-
-        {/* Small Photo Upload */}
-        <input
-          type="file"
-          name="sphoto"
-          onChange={(e) => handleFileChange(e, "sphoto")}
-          className={styles.input}
-        />
-
-        {/* Large Photo Upload */}
-        <input
-          type="file"
-          name="lphoto"
-          onChange={(e) => handleFileChange(e, "lphoto")}
-          className={styles.input}
-        />
-
-        {/* Dropdown for type */}
-        <select
-          name="type"
-          value={formData.type}
-          onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-          className={styles.input}
-        >
-          <option value="">Select Type</option>
-          <option value="pune">Pune</option>
-        </select>
-
-        <input
-          type="text"
-          name="source"
-          placeholder="Source"
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <input
-          type="text"
-          name="sourceLink"
-          placeholder="Source Link"
-          onChange={handleChange}
-          className={styles.input}
-        />
-        <input
-          type="text"
-          name="link"
-          placeholder="Link"
-          onChange={handleChange}
-          className={styles.input}
-        />
-
-        <button type="submit" className={styles.button}>
-          Add News
-        </button>
-      </form>
-    </div>
+        <h1 className={styles.heading}>Add News</h1>
+        {formErrors && <div className={styles.error}>{formErrors}</div>}{" "}
+        {/* Error message */}
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            onChange={handleChange}
+            className={styles.input}
+            value={formData.title}
+          />
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                checked={generateIdAutomatically}
+                onChange={() =>
+                  setGenerateIdAutomatically(!generateIdAutomatically)
+                }
+              />
+              Generate Article ID Automatically
+            </label>
+          </div>
+          <input
+            type="text"
+            name="articleId"
+            placeholder="Article ID"
+            onChange={handleChange}
+            className={styles.input}
+            value={formData.articleId}
+            disabled={generateIdAutomatically}
+          />
+          <ReactQuill
+            value={editorContent}
+            onChange={handleEditorChange}
+            placeholder="Write the description..."
+            className={styles.textarea}
+            theme="snow"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleFileChange(e, "sphoto")}
+            className={styles.input}
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleFileChange(e, "lphoto")}
+            className={styles.input}
+          />
+          <select
+            name="type"
+            value={formData.type}
+            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+            className={styles.input}
+          >
+            <option value="">Select Type</option>
+            <option value="lifestyle">Lifestyle</option>
+            <option value="finance">Finance</option>
+            <option value="markets">Markets</option>
+            <option value="technology">Technology</option>
+            <option value="bombay">Bombay</option>
+          </select>
+          <button
+            type="submit"
+            className={styles.button}
+            disabled={loading || !formValid}
+          >
+            {loading ? "Adding..." : "Add News"}
+          </button>
+          {loading && <div className={styles.loading}>Loading...</div>}{" "}
+          {/* Loading screen */}
+        </form>
+        {/* Optional: Preview of the HTML content */}
+        {/* <h2>Preview:</h2>
+        <div dangerouslySetInnerHTML={{ __html: editorContent }} className={styles.preview}></div> */}
+      </div>
     </>
   );
 }
