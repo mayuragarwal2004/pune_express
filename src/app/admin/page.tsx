@@ -199,11 +199,7 @@ export default function AdminPage() {
           className={styles.input}
         >
           <option value="">Select Type</option>
-          <option value="lifestyle">Lifestyle</option>
-          <option value="finance">Finance</option>
-          <option value="market">Market</option>
-          <option value="technology">Technology</option>
-          <option value="bombay">Bombay</option>
+          <option value="pune">Pune</option>
         </select>
 
         <input

@@ -6,7 +6,7 @@ const PrivacyPolicyPage = () => {
     <div className={styles.container} style={{marginTop: "25px"}}>
       <h1 className={styles.heading}>Privacy Policy</h1>
       <p className={styles.text}>
-        At The Bombay Forum (referred to as “we,” “our,” or “us”), we prioritize your privacy. This Privacy Policy outlines the types of personal information we collect, how we use it, and the measures we take to protect your data.
+        At Pune Express (referred to as “we,” “our,” or “us”), we prioritize your privacy. This Privacy Policy outlines the types of personal information we collect, how we use it, and the measures we take to protect your data.
       </p>
       <h2 className={styles.sectionHeading}>1. Information We Collect</h2>
       <p className={styles.text}>We may collect personal information when you interact with our website, including but not limited to:</p>

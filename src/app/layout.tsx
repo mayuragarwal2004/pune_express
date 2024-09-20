@@ -15,8 +15,8 @@ import NewsletterSubscription from "./components/NewsletterSubscription";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "The Bombay Forum",
-  description: "Get your daily dose of news from The Bombay Forum",
+  title: "Pune Express",
+  description: "Get your daily dose of news from Pune Express",
 };
 
 export default async function RootLayout({
@@ -25,11 +25,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const navList = [
-    { name: "Lifestyle", link: "/category/lifestyle" },
-    { name: "Finance", link: "/category/finance" },
-    { name: "Markets", link: "/category/markets" },
-    { name: "Technology", link: "/category/technology" },
-    { name: "Bombay", link: "/category/bombay" },
+    { name: "Pune", link: "/category/pune" },
   ];
 
   const privacyPolicy = [
@@ -146,7 +142,7 @@ export default async function RootLayout({
                         />
                       </Link>
                       <h1 className="title">
-                        <Link href="/">The Bombay Forum</Link>
+                        <Link href="/">Pune Express</Link>
                       </h1>
                     </div>
                     <div className="body">
@@ -178,7 +174,7 @@ export default async function RootLayout({
               </div>
               <div className="footer-row-2">
                 <div className="footer-info">
-                  <p>© 2024 The Bombay Forum All Rights Reserved.</p>
+                  <p>© 2024 Pune Express All Rights Reserved.</p>
                 </div>
                 <div className="footer-socials">
                   <Link href="https://www.instagram.com/thebombayforum/">
