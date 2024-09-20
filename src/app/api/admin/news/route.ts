@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import db from "../../../../../db"; 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { v4 as uuidv4 } from "uuid";
 
 interface NewsData {
   articleId: string;
@@ -29,7 +28,7 @@ export async function POST(request: Request) {
 
     // Generate articleId if not provided
     if (!articleId) {
-      articleId = uuidv4(); // You can use a library to generate a unique ID
+      articleId = Math.random().toString(36).substring(7);
     }
 
     // Insert the news article into the database
