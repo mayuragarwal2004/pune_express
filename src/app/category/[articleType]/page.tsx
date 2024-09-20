@@ -13,7 +13,7 @@ export default function Search({
     const fetchMainNewsArticle = async () => {
       try {
         const response = await fetch(
-          `/api/searcharticles?articleType=${params.articleType}&num=100`
+          `/api/searcharticles?articleType=${params.articleType}&num=20`
         );
         const data = await response.json();
         if (response.ok) {

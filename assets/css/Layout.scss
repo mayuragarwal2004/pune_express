@@ -1,3 +1,25 @@
+:root {
+  /* Light theme variables */
+  --bg-color: #F3F3F3;
+  --text-color: #041B32;
+  --text-color1: #3B6978;
+  --heading-color: #1E2532;
+  --border-color: #DFDFDF;
+  --card-bg-color: #FFFFFF;
+  --footer-bg-color: #4285f4;
+}
+
+.dark-mode {
+  /* Dark theme variables */
+  --bg-color: #121212;
+  --text-color: #FFFFFF;
+  --text-color1: #9C9C9C;
+  --heading-color: #f4b400;
+  --border-color: #333333;
+  --card-bg-color: #282828;
+  --footer-bg-color: #1f1f1f;
+}
+
 body {
   font-family: "Inter", sans-serif;
   margin: 0;
@@ -10,8 +32,6 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* background-color: #fff; */
-  padding: 10px 20px;
   border-bottom: 2px solid rgba(0, 0, 0, 0.1);
   margin: auto;
   overflow: hidden;
@@ -20,11 +40,17 @@ header {
 .mobile-nav {
   display: none;
   width: 100%;
+  background-color: #011E29;
 
   .logo {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .title a {
+      color: #ffffff;
+      text-decoration: dashed;
+    }
   }
 
   nav ul {
@@ -37,13 +63,18 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
-
+  padding: 10px 20px;
+  position: fixed;
+  top: 0px;
+  background-color: #011E29;
+  z-index: 98765;
   nav {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     max-width: 1000px;
+    // background-color: red;
 
     :first-child {
       justify-content: flex-start;
@@ -61,7 +92,7 @@ header {
 
     li a {
       text-decoration: none;
-      color: #333;
+      color: #ffffff;
     }
   }
 }
@@ -80,7 +111,7 @@ header {
   font-family: "Playfair Display", serif;
   font-optical-sizing: auto;
   font-style: normal;
-  color: #214050;
+  color: #ffffff;
   margin-top: 0;
   margin-bottom: 0;
   text-decoration: none;
@@ -94,11 +125,8 @@ header {
 }
 
 @media screen and (max-width: 750px) {
-  header {
-    padding: 10px 0;
-  }
-
   .mobile-nav {
+    padding: 10px 0;
     display: block;
   }
 
@@ -139,7 +167,7 @@ header {
 
 nav {
   .title a {
-    color: #214050;
+    color: #ffffff;
     text-decoration: dashed;
   }
 
@@ -156,19 +184,19 @@ nav {
 
     a {
       text-decoration: none;
-      color: #333;
+      color: #ffffff;
     }
   }
 }
 
 .login a {
   text-decoration: none;
-  color: #333;
+  color: #ffffff;
 }
 
 /* Footer */
 .footer {
-  background-color: #f9f9f9;
+  background-color: var(--bg-color);
   // padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -258,6 +286,7 @@ nav {
 
       @media screen and (max-width: 650px) {
         text-align: center;
+
         ul {
           justify-content: center;
           flex-wrap: wrap;
@@ -313,6 +342,7 @@ nav {
 
   .footer-info {
     text-align: center;
+    color: var(--text-color);
   }
 
   &-row-2 {
@@ -327,6 +357,36 @@ nav {
     .footer-socials {
       display: flex;
       gap: 10px;
+      color: var(--text-color);
     }
   }
 }
+
+.search-bar-wrapper {
+
+  .searchbar {
+    background-color: var(--card-bg-color); 
+    .MuiInputBase-root {
+      background-color: var(--card-bg-color);
+      // border-radius: 4px; 
+    }
+
+    .MuiInputBase-input {
+      color: var(--text-color)
+    }
+
+    }
+
+    .MuiInputBase-input::-webkit-input-placeholder {
+      color: var(--text-color)
+    }
+
+    .MuiInputBase-input::-moz-placeholder {
+      color: var(--text-color)
+    }
+
+    .MuiInputBase-input:-ms-input-placeholder {
+      color: var(--text-color)
+    }
+  }
+

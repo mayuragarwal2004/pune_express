@@ -1,5 +1,5 @@
 import NewsBlock, { SkeletonNewsBlock } from "./NewsBlock";
-import "/assets/css/Home.scss";
+import "../../../assets/css/Home.scss";
 
 export default function LeftAsideNews({ trendingNews }) {
   return (

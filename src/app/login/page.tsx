@@ -1,11 +1,26 @@
 "use client";
-import React from "react";
-import { signIn } from "next-auth/react";
+import React, { useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session) {
+      const userRole = session.user?.role;
+      if (userRole === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+    }
+  }, [session, router]);
+
   const handleSignIn = () => {
-    signIn("google", { callbackUrl: "/" }); // Replace '/dashboard' with your desired redirect path
+    signIn("google", { callbackUrl: "/admin" });
   };
 
   return (

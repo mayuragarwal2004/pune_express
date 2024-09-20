@@ -1,3 +1,25 @@
+:root {
+  /* Light theme variables */
+  --bg-color: #F3F3F3;
+  --text-color: #041B32;
+  --text-color1: #3B6978;
+  --heading-color: #1E2532;
+  --border-color: #DFDFDF;
+  --card-bg-color: #FFFFFF;
+  --footer-bg-color: #4285f4;
+}
+
+.dark-mode {
+  /* Dark theme variables */
+  --bg-color: #121212;
+  --text-color: #FFFFFF;
+  --text-color1: #9C9C9C;
+  --heading-color: #f4b400;
+  --border-color: #333333;
+  --card-bg-color: #282828;
+  --footer-bg-color: #1f1f1f;
+}
+
 .news-block-wrapper {
   * {
     text-decoration: none !important; // Removes underline
@@ -5,13 +27,10 @@
   }
 
   .news-block {
-    :hover {
-      text-decoration: underline !important;
-    }
     .date {
       font-size: 0.6em;
       font-weight: 500;
-      color: #3B6978;
+      color: var(--text-color1);
       margin-bottom: 10px;
     }
 
@@ -20,10 +39,15 @@
       flex-direction: row;
       align-items: center;
 
+      img{
+        width: 50%;
+        border-radius: 15px;
+      }
+
       p {
         font-size: 0.7em;
         font-weight: 600;
-        color: #1E2532;
+        color: var(--text-color);
         margin-bottom: 10px;
         height: 4rem;
         display: -webkit-box;
@@ -34,11 +58,15 @@
         max-height: 3.6em;
         margin: 0px;
         overflow: hidden;
+      } 
+
+      :hover {
+        text-decoration: underline !important;
       }
     }
 
     .remark {
-      color: #214050;
+      color: var(--text-color);
       font-size: 0.6em;
       font-weight: 500;
       margin-top: 10px;
@@ -115,5 +143,38 @@
   }
   100% {
     left: 100%;
+  }
+}
+
+
+// src/app/components/WeatherWidget.scss
+
+.weather-widget {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: 'Arial', sans-serif;
+  max-width: 400px;
+  margin: 0 auto;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+
+  .weather-info {
+    margin-top: 15px;
+    text-align: center;
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    p {
+      margin: 5px 0;
+      font-size: 18px;
+    }
+  }
+
+  .error {
+    color: red;
+    text-align: center;
   }
 }

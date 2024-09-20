@@ -7,15 +7,16 @@ import Image from "next/image";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import ClientLayout from "./ClientLayout";
-import SendIcon from "@mui/icons-material/Send";
-import IconButton from "@mui/material/IconButton";
+import DarkButton from "./components/DarkButton";
+import SearchIcon from "@mui/icons-material/Search"; 
+import SearchBarClient from "./components/SearchBarClient";
 import NewsletterSubscription from "./components/NewsletterSubscription";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Pune Express",
-  description: "Get your daily dose of news from Pune Express",
+  title: "The Bombay Forum",
+  description: "Get your daily dose of news from The Bombay Forum",
 };
 
 export default async function RootLayout({
@@ -24,17 +25,36 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const navList = [
-    { name: "Pune", link: "/category/pune" },
+    { name: "Lifestyle", link: "/category/lifestyle" },
+    { name: "Finance", link: "/category/finance" },
+    { name: "Markets", link: "/category/markets" },
+    { name: "Technology", link: "/category/technology" },
+    { name: "Bombay", link: "/category/bombay" },
   ];
+
+  const privacyPolicy = [
+    { name: "Terms and conditions", link: "/terms/conditions" },
+    { name: "Privacy policy", link: "/terms/privacy" },
+  ];
+
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 
   const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">
+      <head>
+      </head>
       <body className={inter.className}>
         <ClientLayout session={session}>
           <div>
-            <header>
+            <header >
               <div className="mobile-nav">
                 <div className="logo">
                   <Link href="/">
@@ -45,23 +65,28 @@ export default async function RootLayout({
                       height={40}
                     />
                   </Link>
-                  <h1 className="title">
+                  {/* <h1 className="title">
                     <Link href="/">Pune Express</Link>
-                  </h1>
+                  </h1> */}
                 </div>
                 <nav>
                   <ul>
+                  <div className="search-icon">
+                  <Link href="/search">
+                    <SearchBarClient />
+                  </Link>
+                </div>
                     {navList.map((navItem) => (
                       <div key={navItem.name}>
                         <Link href={navItem.link}>{navItem.name}</Link>
                       </div>
                     ))}
                   </ul>
+                  <DarkButton />
                 </nav>
               </div>
               <div className="desktop-nav">
                 <nav>
-                  {/* show half categories */}
                   <ul>
                     {navList
                       .slice(0, Math.ceil(navList.length / 2))
@@ -71,7 +96,11 @@ export default async function RootLayout({
                         </li>
                       ))}
                   </ul>
-                  {/* show logo */}
+                  <div className="search-icon">
+                <Link href="/search">
+                  <SearchBarClient />
+                </Link>
+              </div>
                   <ul>
                     <div className="logo">
                       <Link href="/">
@@ -82,13 +111,11 @@ export default async function RootLayout({
                           height={40}
                         />
                       </Link>
-                      <h1 className="title">
+                      {/* <h1 className="title">
                         <Link href="/">Pune Express</Link>
-                      </h1>
+                      </h1> */}
                     </div>
                   </ul>
-
-                  {/* show other half */}
                   <ul>
                     {navList
                       .slice(Math.ceil(navList.length / 2), navList.length)
@@ -97,9 +124,12 @@ export default async function RootLayout({
                           <Link href={navItem.link}>{navItem.name}</Link>
                         </li>
                       ))}
+                    <DarkButton />
                   </ul>
+                  <p style={{ color: "#fff" }}>{formattedDate}</p>
                 </nav>
               </div>
+              
             </header>
             {children}
             <section className="footer">
@@ -116,7 +146,7 @@ export default async function RootLayout({
                         />
                       </Link>
                       <h1 className="title">
-                        <Link href="/">Pune Express</Link>
+                        <Link href="/">The Bombay Forum</Link>
                       </h1>
                     </div>
                     <div className="body">
@@ -135,19 +165,26 @@ export default async function RootLayout({
                         </li>
                       ))}
                     </ul>
+                    <ul>
+                      {privacyPolicy.map((navItem) => (
+                        <li key={navItem.name}>
+                          <Link href={navItem.link}>{navItem.name}</Link>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                   <NewsletterSubscription />
                 </div>
               </div>
               <div className="footer-row-2">
                 <div className="footer-info">
-                  <p>© 2024 Pune Express All Rights Reserved.</p>
+                  <p>© 2024 The Bombay Forum All Rights Reserved.</p>
                 </div>
                 <div className="footer-socials">
                   <Link href="https://www.instagram.com/thebombayforum/">
                     <Image
                       src="/images/social/instagram_logo.png"
-                      alt="Facebook"
+                      alt="Instagram"
                       width={30}
                       height={30}
                     />
@@ -155,7 +192,7 @@ export default async function RootLayout({
                   <Link href="https://www.threads.net/@thebombayforum">
                     <Image
                       src="/images/social/threads_logo.png"
-                      alt="Facebook"
+                      alt="Threads"
                       width={30}
                       height={30}
                     />

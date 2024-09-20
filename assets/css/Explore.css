@@ -1,3 +1,25 @@
+:root {
+  /* Light theme variables */
+  --bg-color: #F3F3F3;
+  --text-color: #041B32;
+  --text-color1: #3B6978;
+  --heading-color: #1E2532;
+  --border-color: #DFDFDF;
+  --card-bg-color: #FFFFFF;
+  --footer-bg-color: #4285f4;
+}
+
+.dark-mode {
+  /* Dark theme variables */
+  --bg-color: #121212;
+  --text-color: #FFFFFF;
+  --text-color1: #9C9C9C;
+  --heading-color: #f4b400;
+  --border-color: #333333;
+  --card-bg-color: #282828;
+  --footer-bg-color: #1f1f1f;
+}
+
 .masonry-grid {
   display: flex;
   margin-left: -30px; /* Adjust as needed */
@@ -24,7 +46,7 @@
   align-items: center;
   height: 60vh;
   font-size: 24px;
-  color: #999;
+  color: var(--text-color);
 }
 
 .market-action {
@@ -115,7 +137,7 @@
 
 .news-sidebar ul li span {
   font-size: 12px;
-  color: #999;
+  color: var(--card-bg-color);
 }
 
 .news-sidebar p {
@@ -206,7 +228,7 @@
 
 .left-news-block > .news-block-design1 > .heading > span:last-child {
   margin-left: auto;
-  color: #999;
+  color: var(--card-bg-color);
 }
 
 .left-news-block .news-block-design1 .heading img {

@@ -14,7 +14,7 @@ export default function Explore({
 }) {
   const cardDesign1 = (newsArticle: news) => {
     return (
-      <div className="news-block-design1 left-news-block">
+      <div className="news-block-design1 left-news-block" >
         <img src={newsArticle.sphoto} alt="News Image" />
         <p className="heading">
           <img src="images/avatar.jpg" alt="" />
@@ -29,7 +29,7 @@ export default function Explore({
   const cardDesign2 = (newsArticle: news) => {
     return (
       <Link href={`/view/${newsArticle.articleId}`}>
-      <div className="news-block-design2">
+      <div className="news-block-design2" style={{marginTop: "50px"}}>
         <img src={newsArticle.sphoto} alt="News Image" />
         <div className="overlay-gradient" />
         <p className="body">{newsArticle.title}</p>
