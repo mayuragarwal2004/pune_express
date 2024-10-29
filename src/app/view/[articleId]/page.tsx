@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Head from "next/head"; // Import Head from next/head
+import Head from "next/head";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import Image from "next/image"; // Import Next.js Image component
 import "../../../../assets/css/SpecificArticleDesign1.scss";
-// import "../../../../assets/css/Home.scss";
 import { formatDate } from "@/app/utilfunctions/dateFormatter";
 import LeftAsideNews from "@/app/components/LeftAsideNews";
 import Link from "next/link";
@@ -14,10 +14,11 @@ import RightBsideNews from "@/app/components/RightBsideNews";
 import { Tooltip } from "@mui/material";
 import ShareIcon from "@mui/icons-material/Share";
 
+import ShareWhite from "../../../../assets/img/shareWhite.png"; // Adjust your image import path
+
 function getRandomElement(array: news[]) {
   const randomIndex = Math.floor(Math.random() * array.length);
-  const randomElement = array[randomIndex];
-  return randomElement;
+  return array[randomIndex];
 }
 
 const ArticlePage = ({ params }: { params: { articleId: string } }) => {
@@ -32,22 +33,17 @@ const ArticlePage = ({ params }: { params: { articleId: string } }) => {
   useEffect(() => {
     const fetchTrendingNewsArticle = async () => {
       try {
-        const response = await fetch(
-          `/api/searcharticles?num=15&randomize=false&sortBy=created_datetime&order=DESC`
-        );
+        const response = await fetch(`/api/searcharticles?num=15&randomize=false&sortBy=created_datetime&order=DESC`);
         let data = await response.json();
         if (response.ok) {
           const randomElement = getRandomElement(data.slice(1) || data);
           setMarketTickerData(
-            <>
-              <Link href={`/view/${randomElement.articleId}`}>
-                Breaking News: {randomElement.title}
-              </Link>
-            </>
+            <Link href={`/view/${randomElement.articleId}`}>
+              Breaking News: {randomElement.title}
+            </Link>
           );
           data = data.slice(0, 10);
           setTrendingNews(data);
-          // Store category in localStorage
           if (data.type) {
             localStorage.setItem("articleType", data.type);
           }
@@ -59,13 +55,10 @@ const ArticlePage = ({ params }: { params: { articleId: string } }) => {
 
     const fetchLatestNewsArticle = async () => {
       try {
-        const response = await fetch(
-          `/api/searcharticles?articleType=random&num=8&order=DESC`
-        );
+        const response = await fetch(`/api/searcharticles?articleType=random&num=8&order=DESC`);
         const data = await response.json();
         if (response.ok) {
           setLatestNews(data);
-          // Store category in localStorage
           if (data.type) {
             localStorage.setItem("articleType", data.type);
           }
@@ -82,15 +75,10 @@ const ArticlePage = ({ params }: { params: { articleId: string } }) => {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const response = await fetch(
-          `/api/searcharticles?articleId=${encodeURIComponent(
-            params.articleId
-          )}&fullDescription=true`
-        );
+        const response = await fetch(`/api/searcharticles?articleId=${encodeURIComponent(params.articleId)}&fullDescription=true`);
         const data = await response.json();
         if (response.ok) {
           setArticle(data[0]);
-          // Store category in localStorage
           if (data.type) {
             localStorage.setItem("articleType", data.type);
           }
@@ -121,10 +109,9 @@ const ArticlePage = ({ params }: { params: { articleId: string } }) => {
         console.error("Error sharing article:", error);
       }
     } else {
-      // Fallback to copy the link if Web Share API is not available
       navigator.clipboard.writeText(articleUrl).then(() => {
         setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+        setTimeout(() => setIsCopied(false), 2000);
       });
     }
   };
@@ -132,12 +119,10 @@ const ArticlePage = ({ params }: { params: { articleId: string } }) => {
   if (loading) return <p>Loading...</p>;
   if (!article) return <p>Article not found.</p>;
 
-  console.log(article);
-
   return (
-    <div className="specific-article-design1">
+    <div className="specific-article-design1" style={{marginTop: "90px"}}>
       <Head>
-        <title>{"Article Page"}</title>
+        <title>{article?.title || "Article Page"}</title>
       </Head>
       <div className="header">
         <div className="go-back" onClick={() => router.back()}>
@@ -158,9 +143,12 @@ const ArticlePage = ({ params }: { params: { articleId: string } }) => {
           <div className="image">
             <img src={article.lphoto} alt="Article Image" />
           </div>
-          <div className="des">
-            <p style={{ textAlign: "justify" }}>{article.description}</p>
-          </div>
+          <div
+            className="des"
+            dangerouslySetInnerHTML={{
+              __html: article.description, // Sanitize and set inner HTML
+            }}
+          />
 
           {/* Share Button */}
           <div className="share-button">
@@ -179,34 +167,25 @@ const ArticlePage = ({ params }: { params: { articleId: string } }) => {
                   cursor: "pointer",
                   position: "fixed",
                   right: "50px",
-                  top: "100px",
+                  top: "120px",
                 }}
               >
-                <ShareIcon style={{ marginRight: "5px" }} />
+                <Image
+                  src={ShareWhite}
+                  width={20}
+                  height={20}
+                  alt="share icon"
+                  style={{ marginRight: "5px" }}
+                />
                 Share
               </button>
             </Tooltip>
           </div>
-
-          {/* {article.lphoto && (
-          <div className="image">
-            <img src={article.lphoto} alt="Additional Image" />
-            <div className="caption">IMAGE CAPTION OR CREDIT</div>
-          </div>
-        )} */}
-
-          {/* You can add more logic to fetch and display related articles */}
         </div>
-
         <aside className="right-aside">
           <RightBsideNews latestNews={latestNews} />
         </aside>
       </div>
-      {/* 
-      <div>
-        <hr />
-        <h2>Other Trending News</h2>
-      </div> */}
     </div>
   );
 };

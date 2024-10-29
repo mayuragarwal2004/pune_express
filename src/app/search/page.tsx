@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import SearchBar from 'material-ui-search-bar';
-import { news } from '../utilfunctions/interfaces'; // Adjust the path as necessary
+import React, { useState, useEffect } from "react";
+import SearchBar from "material-ui-search-bar";
+import { news } from "../utilfunctions/interfaces"; // Adjust the path as necessary
 // import NewsBlock from '../components/NewsBlock';
-import ExploreLayout from '../components/ExploreLayout';
+import ExploreLayout from "../components/ExploreLayout";
 
 export default function SearchPage() {
   const [searchValue, setSearchValue] = useState("");
@@ -12,28 +12,32 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (searchValue) {
-      const fetchSearchResults = async () => {
-        setLoading(true);
-        try {
-          const response = await fetch(`/api/searcharticles?query=${searchValue}`);
+    const fetchSearchResults = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/api/searcharticles?query=${searchValue}&num=20`
+        );
+        if (response.status === 404) {
+          setSearchResults([]); // Set empty results if 404
+        } else {
           const data = await response.json();
           if (response.ok) {
             setSearchResults(data);
           }
-        } catch (error) {
-          console.error("Failed to fetch search results:", error);
-        } finally {
-          setLoading(false);
         }
-      };
+      } catch (error) {
+        console.error("Failed to fetch search results:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      fetchSearchResults();
-    }
+    fetchSearchResults();
   }, [searchValue]);
 
   return (
-    <div className="search-page"  >
+    <div className="search-page">
       <div className="search-bar-wrapper">
         <SearchBar
           className="searchbar"
